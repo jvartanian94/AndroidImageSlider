@@ -1,6 +1,7 @@
 package com.daimajia.slider.library.SliderTypes;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -38,6 +39,7 @@ public abstract class BaseSliderView {
     private String mUrl;
     private File mFile;
     private int mRes;
+    private Uri mUri;
 
     protected OnSliderClickListener mOnSliderClickListener;
 
@@ -108,7 +110,7 @@ public abstract class BaseSliderView {
      * @return
      */
     public BaseSliderView image(String url){
-        if(mFile != null || mRes != 0){
+        if(mFile != null || mRes != 0 || mUri != null){
             throw new IllegalStateException("Call multi image function," +
                     "you only have permission to call it once");
         }
@@ -122,7 +124,7 @@ public abstract class BaseSliderView {
      * @return
      */
     public BaseSliderView image(File file){
-        if(mUrl != null || mRes != 0){
+        if(mUrl != null || mRes != 0 || mUri != null){
             throw new IllegalStateException("Call multi image function," +
                     "you only have permission to call it once");
         }
@@ -131,11 +133,20 @@ public abstract class BaseSliderView {
     }
 
     public BaseSliderView image(int res){
-        if(mUrl != null || mFile != null){
+        if(mUrl != null || mFile != null || mUri != null){
             throw new IllegalStateException("Call multi image function," +
                     "you only have permission to call it once");
         }
         mRes = res;
+        return this;
+    }
+
+    public BaseSliderView image(Uri uri){
+        if (mUrl != null || mFile != null || mRes != 0) {
+            throw new IllegalStateException("Call multi image function," +
+                    "you only have permission to call it once");
+        }
+        mUri = uri;
         return this;
     }
 
@@ -215,6 +226,8 @@ public abstract class BaseSliderView {
             rq = p.load(mFile);
         }else if(mRes != 0){
             rq = p.load(mRes);
+        }else if(mUri != null){
+            rq = p.load(mUri);
         }else{
             return;
         }
